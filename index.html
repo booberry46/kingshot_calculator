@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kingshot Speedup Target Hitter</title>
+    <title>Kingshot Speedup Target Hitter (8h Included)</title>
     <style>
         body { font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background: #f4f4f4; }
         h1 { text-align: center; color: #333; }
@@ -23,13 +23,14 @@
 </head>
 <body>
     <h1>Kingshot Speedup Target Hitter</h1>
+    <p style="text-align:center; color:#555;">Now with <strong>8-Hour (480m)</strong> support!</p>
     
     <div class="howto">
         <strong>How to Use:</strong><br>
-        1. Enter your <strong>Target Minutes</strong> (e.g., 7200 for a 5-day event task).<br>
+        1. Enter your <strong>Target Minutes</strong> (e.g., 7200).<br>
         2. Input how many of each speedup you’ve <strong>already used</strong>.<br>
-        3. Click Calculate → See <strong>exactly what else you need</strong> to hit the goal!<br>
-        4. Optional: Toggle event points below.
+        3. Click Calculate → See <strong>exactly what else you need</strong> (8h → 3h → 1h → 5m → 1m).<br>
+        4. Toggle points below for event estimates.
     </div>
 
     <table>
@@ -43,6 +44,7 @@
         <tr><td>5 Minutes</td><td>5</td><td><input type="number" id="count5m" min="0" value="0"></td></tr>
         <tr><td>1 Hour</td><td>60</td><td><input type="number" id="count1h" min="0" value="70"></td></tr>
         <tr><td>3 Hours</td><td>180</td><td><input type="number" id="count3h" min="0" value="0"></td></tr>
+        <tr><td><strong>8 Hours</strong></td><td><strong>480</strong></td><td><input type="number" id="count8h" min="0" value="0"></td></tr>
     </table>
 
     <button onclick="calculate()">Calculate: What Else Do I Need?</button>
@@ -53,7 +55,7 @@
         <div class="output">Total Time Saved: <span id="totalTime"></span></div>
 
         <div id="neededList" class="needed" style="display:none;">
-            <strong>You Need (Largest First):</strong><br>
+            <strong>You Need (Largest → Smallest):</strong><br>
             <div id="neededItems"></div>
         </div>
 
@@ -74,10 +76,10 @@
 
     <div class="howto" style="margin-top:30px;">
         <strong>Pro Tips:</strong><br>
-        • Use <strong>3h and 1h</strong> first for big chunks.<br>
-        • Save <strong>1m and 5m</strong> to fine-tune exact targets.<br>
+        • Use <strong>8h first</strong> → then 3h → 1h → save 5m/1m for exact hits.<br>
         • For <strong>Hall of Governors</strong>: Promote high-tier troops = 2000–3000+ pts/min!<br>
-        • Construction/Research = only ~1 pt/min → save for Working Overtime.
+        • Construction/Research = ~1 pt/min → save for Working Overtime.<br>
+        • 8h speedups are <strong>gold</strong> for long queues.
     </div>
 
     <script>
@@ -87,8 +89,9 @@
             const c5 = parseInt(document.getElementById('count5m').value) || 0;
             const c60 = parseInt(document.getElementById('count1h').value) || 0;
             const c180 = parseInt(document.getElementById('count3h').value) || 0;
+            const c480 = parseInt(document.getElementById('count8h').value) || 0;
 
-            const totalMin = c1 * 1 + c5 * 5 + c60 * 60 + c180 * 180;
+            const totalMin = c1 * 1 + c5 * 5 + c60 * 60 + c180 * 180 + c480 * 480;
             const diff = totalMin - target;
 
             const days = Math.floor(totalMin / 1440);
@@ -101,4 +104,46 @@
 
             const neededDiv = document.getElementById('neededItems');
             const neededList = document.getElementById('neededList');
-            const overDiv = document.getElementById('over
+            const overDiv = document.getElementById('over');
+            const overMin = document.getElementById('overMin');
+
+            if (diff < 0) {
+                const shortfall = -diff;
+                document.getElementById('shortfall').textContent = shortfall.toLocaleString();
+                let remain = shortfall;
+                let items = [];
+
+                // Largest first: 8h → 3h → 1h → 5m → 1m
+                const n480 = Math.floor(remain / 480); if (n480 > 0) { items.push(`${n480}× 8h (${n480*480}m)`); remain -= n480*480; }
+                const n180 = Math.floor(remain / 180); if (n180 > 0) { items.push(`${n180}× 3h (${n180*180}m)`); remain -= n180*180; }
+                const n60 = Math.floor(remain / 60);   if (n60 > 0)  { items.push(`${n60}× 1h (${n60*60}m)`); remain -= n60*60; }
+                const n5 = Math.floor(remain / 5);     if (n5 > 0)   { items.push(`${n5}× 5m (${n5*5}m)`); remain -= n5*5; }
+                const n1 = remain;                     if (n1 > 0)   { items.push(`${n1}× 1m (${n1}m)`); }
+
+                neededDiv.innerHTML = items.join('<br>');
+                neededList.style.display = 'block';
+                overDiv.style.display = 'none';
+            } else if (diff > 0) {
+                overMin.textContent = diff.toLocaleString();
+                overDiv.style.display = 'block';
+                neededList.style.display = 'none';
+            } else {
+                neededList.style.display = 'none';
+                overDiv.style.display = 'none';
+            }
+
+            // Points
+            document.getElementById('woPoints').textContent = totalMin.toLocaleString();
+            document.getElementById('hogTroops').textContent = (totalMin * 2500).toLocaleString();
+            document.getElementById('hogOther').textContent = totalMin.toLocaleString();
+
+            document.getElementById('results').style.display = 'block';
+        }
+
+        function togglePoints() {
+            const sec = document.getElementById('pointsSection');
+            sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>
