@@ -3,163 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kingshot Universal Speedup Calculator - Const/Research/Troops/Healing</title>
+    <title>Kingshot Speedup Calculator - Hit Any Target Exactly!</title>
     <style>
         body { font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background: #f4f4f4; }
         h1 { text-align: center; color: #333; }
-        .tabs { display: flex; background: white; border-radius: 8px 8px 0 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; background: #eee; border-radius: 8px 8px 0 0; }
-        .tab.active { background: #4CAF50; color: white; }
-        .tab-content { display: none; background: white; padding: 20px; border-radius: 0 0 8px 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .tab-content.active { display: block; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        h2 { color: #4CAF50; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background: #4CAF50; color: white; }
         input, select { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
         button { background: #4CAF50; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; margin: 15px 0; }
         button:hover { background: #45a049; }
-        .output { background: #e8f5e8; font-weight: bold; font-size: 18px; padding: 10px; border-radius: 4px; }
+        .output { background: #e8f5e8; font-weight: bold; font-size: 18px; padding: 10px; border-radius: 4px; margin: 10px 0; }
+        .needed { background: #d4edda; padding: 15px; border-radius: 5px; margin: 10px 0; }
         .tips { background: #fff3cd; padding: 15px; border-radius: 5px; margin-top: 20px; }
+        .howto { background: #e7f3ff; padding: 15px; border-radius: 5px; margin: 20px 0; }
         .max-tip { background: #d4edda; padding: 10px; margin: 10px 0; border-radius: 4px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h1>Kingshot Universal Speedup Maximizer</h1>
-    <p>Input your speedups by type. Select event for tailored points. Covers Const/Research/Troops/Healing/General!</p>
+    <h1>Kingshot Universal Speedup Calculator</h1>
     
-    <div class="tabs">
-        <div class="tab active" onclick="switchTab('const')">Construction</div>
-        <div class="tab" onclick="switchTab('research')">Research</div>
-        <div class="tab" onclick="switchTab('troops')">Troops (Train/Promo)</div>
-        <div class="tab" onclick="switchTab('other')">Healing/General</div>
+    <div class="howto">
+        <strong>How to Use:</strong><br>
+        1. Enter your <strong>Target Minutes</strong> (e.g., 7200 for a big event task).<br>
+        2. Input your <strong>speedups used so far</strong> (e.g., 70 for 1h).<br>
+        3. Pick <strong>Event</strong> for points calc.<br>
+        4. Click Calculate → See total provided, shortfall, <strong>exact "what else" needed</strong> (largest first) + points!
     </div>
     
-    <div id="const" class="tab-content active">
-        <table>
-            <tr><th>1m</th><td>1 min</td><td><input type="number" id="c1m" min="0" value="0"></td></tr>
-            <tr><th>5m</th><td>5 min</td><td><input type="number" id="c5m" min="0" value="0"></td></tr>
-            <tr><th>1h</th><td>60 min</td><td><input type="number" id="c1h" min="0" value="0"></td></tr>
-            <tr><th>3h</th><td>180 min</td><td><input type="number" id="c3h" min="0" value="0"></td></tr>
-        </table>
-    </div>
+    <table>
+        <tr><th>Target Minutes</th><td><input type="number" id="targetMin" min="0" value="7200" placeholder="e.g., 7200"></td></tr>
+    </table>
     
-    <div id="research" class="tab-content">
-        <table>
-            <tr><th>1m</th><td>1 min</td><td><input type="number" id="r1m" min="0" value="0"></td></tr>
-            <tr><th>5m</th><td>5 min</td><td><input type="number" id="r5m" min="0" value="0"></td></tr>
-            <tr><th>1h</th><td>60 min</td><td><input type="number" id="r1h" min="0" value="0"></td></tr>
-            <tr><th>3h</th><td>180 min</td><td><input type="number" id="r3h" min="0" value="0"></td></tr>
-        </table>
-    </div>
-    
-    <div id="troops" class="tab-content">
-        <table>
-            <tr><th>1m</th><td>1 min</td><td><input type="number" id="t1m" min="0" value="0"></td></tr>
-            <tr><th>5m</th><td>5 min</td><td><input type="number" id="t5m" min="0" value="0"></td></tr>
-            <tr><th>1h</th><td>60 min</td><td><input type="number" id="t1h" min="0" value="0"></td></tr>
-            <tr><th>3h</th><td>180 min</td><td><input type="number" id="t3h" min="0" value="0"></td></tr>
-        </table>
-    </div>
-    
-    <div id="other" class="tab-content">
-        <table>
-            <tr><th>1m</th><td>1 min</td><td><input type="number" id="o1m" min="0" value="0"></td></tr>
-            <tr><th>5m</th><td>5 min</td><td><input type="number" id="o5m" min="0" value="0"></td></tr>
-            <tr><th>1h</th><td>60 min</td><td><input type="number" id="o1h" min="0" value="0"></td></tr>
-            <tr><th>3h</th><td>180 min</td><td><input type="number" id="o3h" min="0" value="0"></td></tr>
-        </table>
-    </div>
+    <h2>Your Speedups Used</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Minutes</th>
+                <th>Count Used</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>1 Minute</td><td>1</td><td><input type="number" id="count1m" min="0" value="0"></td></tr>
+            <tr><td>5 Minutes</td><td>5</td><td><input type="number" id="count5m" min="0" value="0"></td></tr>
+            <tr><td>1 Hour</td><td>60</td><td><input type="number" id="count1h" min="0" value="70"></td></tr>
+            <tr><td>3 Hours</td><td>180</td><td><input type="number" id="count3h" min="0" value="0"></td></tr>
+        </tbody>
+    </table>
     
     <select id="event" style="width:100%; padding:10px; margin:10px 0;">
-        <option value="wo">Working Overtime (1 pt/min Const/Research)</option>
-        <option value="hog">HoG/Power Up (Troops: 2000 pts/min; Const/Res:1)</option>
-        <option value="general">General (Total Mins Only)</option>
+        <option value="wo">Working Overtime (WO): 1 point per minute (use on Construction/Research speedups)</option>
+        <option value="hog">Hall of Governors (HoG): Troops promotion ~2500 pts/min (Construction/Research: ~1 pt/min)</option>
+        <option value="power">Power Up / Plan Your City: ~1 power per minute (Troops best)</option>
+        <option value="general">General Use (Total Time Only)</option>
     </select>
     
-    <button onclick="calculate()">Calculate Totals & Points</button>
+    <button onclick="calculate()">Calculate: Total + What Else Needed + Points</button>
     
     <div id="results" style="display:none;">
         <table>
-            <tr><td>Total Minutes:</td><td class="output" id="totalMin"></td></tr>
+            <tr><td>Total Provided:</td><td class="output" id="totalMin"></td></tr>
+            <tr><td>Shortfall:</td><td class="output" id="shortfall"></td></tr>
             <tr><td>Total Time:</td><td class="output" id="totalTime"></td></tr>
             <tr><td>Event Points:</td><td class="output" id="eventPoints"></td></tr>
-            <tr><td>Per Min Efficiency:</td><td class="output" id="efficiency"></td></tr>
+            <tr><td>Efficiency:</td><td class="output" id="efficiency"></td></tr>
         </table>
+        <div id="neededList" class="needed" style="display:none;">
+            <strong>What Else You Need (Largest First):</strong><br>
+            <div id="neededItems"></div>
+        </div>
         <div id="maxTip" class="max-tip"></div>
     </div>
     
     <div class="tips">
-        <strong>Max Tips:</strong><br>
-        • <strong>WO</strong>: Use Const/Research → 1 pt/min. Save 1m/5m for exact.<br>
-        • <strong>HoG/Power</strong>: Troops (promo high-tier) = 2k-3k pts/min! Const/Res low (~1/min).<br>
-        • Small for fine-tune; large for queues. Check <a href="https://kingshotcalculator.com/" target="_blank">Kingshot Calc</a> for troop times.<grok-card data-id="9abc5c" data-type="citation_card"></grok-card>
+        <strong>Max Usage Tips:</strong><br>
+        • **Working Overtime (WO)**: Save Construction/Research speedups → 1 point per minute used. Perfect for exact targets.<br>
+        • **Hall of Governors (HoG)**: Use Troops (especially promotion high-tier) for 2000-3000+ pts/min! Construction/Research only ~1 pt/min—save for WO.<br>
+        • **Power Up / Plan Your City**: All speedups count as ~1 power/min, but Troops give most power per min.<br>
+        • **General**: Healing/General flexible. Use small (1m/5m) for fine-tuning targets; large (1h/3h) for long queues.<br>
+        • Pro: Time upgrades to finish on event days (e.g., HoG troop day). Check <a href="https://kingshotcalculator.com/" target="_blank">Kingshot Calc</a> for troop times.<grok-card data-id="9ec572" data-type="citation_card"></grok-card>
     </div>
 
     <script>
-        let currentTab = 'const';
-        
-        function switchTab(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById(tab).classList.add('active');
-            currentTab = tab;
-        }
-        
         function calculate() {
-            const event = document.getElementById('event').value;
-            const inputs = {
-                'const': ['c1m','c5m','c1h','c3h'],
-                'research': ['r1m','r5m','r1h','r3h'],
-                'troops': ['t1m','t5m','t1h','t3h'],
-                'other': ['o1m','o5m','o1h','o3h']
-            };
-            let totalMin = 0;
-            inputs[currentTab].forEach(id => {
-                const val = parseInt(document.getElementById(id).value) || 0;
-                if (id.includes('1m')) totalMin += val * 1;
-                if (id.includes('5m')) totalMin += val * 5;
-                if (id.includes('1h')) totalMin += val * 60;
-                if (id.includes('3h')) totalMin += val * 180;
-            });
+            const target = parseInt(document.getElementById('targetMin').value) || 0;
+            const c1 = parseInt(document.getElementById('count1m').value) || 0;
+            const c5 = parseInt(document.getElementById('count5m').value) || 0;
+            const c60 = parseInt(document.getElementById('count1h').value) || 0;
+            const c180 = parseInt(document.getElementById('count3h').value) || 0;
+            
+            const totalMin = 1*c1 + 5*c5 + 60*c60 + 180*c180;
+            const shortfall = Math.max(0, target - totalMin);
             
             const days = Math.floor(totalMin / 1440);
             const hours = Math.floor((totalMin % 1440) / 60);
             const mins = totalMin % 60;
             const totalTime = `${days}d ${hours}h ${mins}m`;
             
+            const event = document.getElementById('event').value;
             let points = totalMin; // Default 1/min
             let eff = 1;
             let tip = '';
             if (event === 'hog') {
-                if (currentTab === 'troops') {
-                    points = totalMin * 2000; // Avg promo efficiency
-                    eff = 2000;
-                    tip = '🚀 MAX: High-tier promo in HoG = 2-3k pts/min!';
-                } else {
-                    points = totalMin * 1;
-                    eff = 1;
-                    tip = '⚠️ Low: Save Const/Res for WO/Power (1 pt/min). Troops > Const!';
-                }
+                eff = 2500; // Avg high-tier promo
+                points = totalMin * 2500;
+                tip = '🚀 MAX: Promote high-tier troops in HoG = 2k-3k+ pts/min! Const/Res low—save for WO.';
             } else if (event === 'wo') {
-                if (currentTab === 'const' || currentTab === 'research') {
-                    points = totalMin * 1;
-                    eff = 1;
-                    tip = '✅ Perfect for WO: 1 pt/min!';
-                } else {
-                    points = 0;
-                    eff = 0;
-                    tip = '❌ Troops/Other NOT for WO—use Const/Res!';
-                }
-            }
+                points = totalMin * 1;
+                eff = 1;
+                tip = '✅ Ideal for WO: Use Construction/Research speedups for 1 pt/min.';
+            } // Power/general: 1/min
             
-            document.getElementById('totalMin').textContent = totalMin.toLocaleString();
+            document.getElementById('totalMin').textContent = totalMin.toLocaleString() + ' minutes';
+            document.getElementById('shortfall').textContent = shortfall.toLocaleString() + ' minutes';
             document.getElementById('totalTime').textContent = totalTime;
             document.getElementById('eventPoints').textContent = points.toLocaleString();
             document.getElementById('efficiency').textContent = eff + ' pts/min';
             document.getElementById('maxTip').textContent = tip;
             
+            // What else needed
+            const neededDiv = document.getElementById('neededItems');
+            const neededList = document.getElementById('neededList');
+            if (shortfall > 0) {
+                let remain = shortfall;
+                let items = [];
+                // Largest first
+                items.push(...prioritizeNeeded(remain, 180, '3h'));
+                items.push(...prioritizeNeeded(remain, 60, '1h'));
+                items.push(...prioritizeNeeded(remain, 5, '5m'));
+                items.push(...prioritizeNeeded(remain, 1, '1m'));
+                neededDiv.innerHTML = items.join('<br>');
+                neededList.style.display = 'block';
+            } else {
+                neededList.style.display = 'none';
+            }
+            
             document.getElementById('results').style.display = 'block';
+        }
+        
+        function prioritizeNeeded(remain, size, name) {
+            const count = Math.floor(remain / size);
+            if (count > 0) {
+                remain -= count * size;
+                return [`${count}x ${name} (${count * size}m)`];
+            }
+            return [];
         }
     </script>
 </body>
